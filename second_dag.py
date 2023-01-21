@@ -3,35 +3,27 @@ import logging as log
 import pendulum
 from airflow.operators.python import PythonOperator
 from airflow.operators.dummy import DummyOperator
+import requests
+import json
 
-def first_task_function():
-    log.info("Welcome to CS 280! This is your first task")
-    name = "Sean Brady"
-    log.info(f"My name is {name}")
-    return
+def get_item_url_by_id(id):
+    return f"https://hacker-news.firebaseio.com/v0/item/{id}.json"
 
-def second_task_function():
-    log.info("This is your second task")
-    major = "Computer Science"
-    log.info(f"My major is {major}")
-    return
-
-def third_task_function():
-    log.info("This is your third task")
-    hometown = "Spanish Fork"
-    log.info(f"I am from {hometown}")
-    return
+def load_max_item_dict():
+    max_item_url = "https://hacker-news.firebaseio.com/v0/maxitem.json"
+    maxitem = requests.get(max_item_url)
+    response = requests.get(get_item_url_by_id(maxitem))
+    max_item_dict = json.loads(response.json())
+    log.info(f"Max item is {max_item_dict}")
+    return max_item_dict
 
 with DAG(
-    dag_id="My_First_CS_280_DAG",
+    dag_id="My_Second_CS_280_DAG",
     schedule_interval="0 10 * * *",
-    start_date=pendulum.datetime(2023, 9, 1, tz="US/Pacific"),
+    start_date=pendulum.datetime(2023, 20, 1, tz="US/Pacific"),
     catchup=False,
 ) as dag:
-    start_task = DummyOperator(task_id="start_task")
-    first_task = PythonOperator(task_id="first_task", python_callable=first_task_function)
-    second_task = PythonOperator(task_id="second_task", python_callable=second_task_function)
-    third_task = PythonOperator(task_id="third_task", python_callable=third_task_function)
+    load_max_item = PythonOperator(task_id="load_max_item", python_callable=load_max_item_dict)
     end_task = DummyOperator(task_id="end_task")
 
-start_task >> first_task >> second_task >> third_task >> end_task
+load_max_item >> end_task
