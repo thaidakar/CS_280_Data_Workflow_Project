@@ -4,7 +4,6 @@ import pendulum
 from airflow.operators.python import PythonOperator
 from airflow.operators.dummy import DummyOperator
 import requests
-import json
 
 def get_item_url_by_id(id):
     return f"https://hacker-news.firebaseio.com/v0/item/{id}.json"
@@ -13,7 +12,7 @@ def load_max_item_dict():
     max_item_url = "https://hacker-news.firebaseio.com/v0/maxitem.json"
     maxitem = requests.get(max_item_url)
     response = requests.get(get_item_url_by_id(maxitem))
-    max_item_dict = json.loads(response.json())
+    max_item_dict = response.json()
     log.info(f"Max item is {max_item_dict}")
     return max_item_dict
 
