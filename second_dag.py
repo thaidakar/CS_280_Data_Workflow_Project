@@ -20,7 +20,7 @@ def load_max_item_dict():
 with DAG(
     dag_id="My_Second_CS_280_DAG",
     schedule_interval="0 10 * * *",
-    start_date=pendulum.datetime(2023, 20, 1, tz="US/Pacific"),
+    start_date=pendulum.datetime(2023, 1, 20, tz="US/Pacific"),
     catchup=False,
 ) as dag:
     load_max_item = PythonOperator(task_id="load_max_item", python_callable=load_max_item_dict)
