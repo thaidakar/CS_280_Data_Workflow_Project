@@ -6,6 +6,7 @@ from airflow.operators.dummy import DummyOperator
 import requests
 
 def get_item_url_by_id(id):
+    log.info(f"id is {id}")
     return f"https://hacker-news.firebaseio.com/v0/item/{id}.json"
 
 def load_max_item_dict():
