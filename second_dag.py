@@ -12,7 +12,7 @@ def get_item_url_by_id(id):
 def load_max_item_dict():
     max_item_url = "https://hacker-news.firebaseio.com/v0/maxitem.json"
     maxitem = requests.get(max_item_url)
-    response = requests.get(get_item_url_by_id(maxitem))
+    response = requests.get(get_item_url_by_id(maxitem.json()))
     max_item_dict = response.json()
     log.info(f"Max item is {max_item_dict}")
     return max_item_dict
