@@ -36,7 +36,7 @@ def get_twitter_api_data_task(ti: TaskInstance, **kwargs):
 with DAG(
     dag_id="project_lab_1_etl",
     schedule_interval="0 9 * * *",
-    start_date=pendulum.datetime(2023, 1, 1, tz="US/Pacific"),
+    start_date=pendulum.datetime(2023, 1, 26, tz="US/Pacific"),
     catchup=False,
 ) as dag:
     my_dummy_task = PythonOperator(
@@ -45,9 +45,9 @@ with DAG(
         provide_context=True,
     )
     my_dummy_task_two = PythonOperator(
-    task_id="my_dummy_task_2",
-    python_callable=my_task_func_2,
-    provide_context=True,
+        task_id="my_dummy_task_2",
+        python_callable=my_task_func_2,
+        provide_context=True,
     )
 
 my_dummy_task >> my_dummy_task_two
