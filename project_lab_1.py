@@ -6,14 +6,14 @@ import pendulum
 from airflow.operators.python import PythonOperator
 import requests
 
-def get_auth_header():
-  bearer_token = Variable.get("TWITTER_BEARER_TOKEN", deserialize_json=True)
-  return {"Authorization": f"Bearer {bearer_token}"}
+# def get_auth_header():
+#   bearer_token = Variable.get("TWITTER_BEARER_TOKEN", deserialize_json=True)
+#   return {"Authorization": f"Bearer {bearer_token}"}
 
-user_id = "44196397"
-api_url = f"https://api.twitter.com/2/users/{user_id}"
-request = requests.get(api_url, headers=get_auth_header())
-print(request)
+# user_id = "44196397"
+# api_url = f"https://api.twitter.com/2/users/{user_id}"
+# request = requests.get(api_url, headers=get_auth_header())
+# print(request)
 
 def my_task_func(ti: TaskInstance, **kwargs):
   my_list = [1,2,3,4,5]
