@@ -5,6 +5,7 @@ import logging as log
 import pendulum
 from airflow.operators.python import PythonOperator
 import requests
+import pandas as pd
 
 def get_auth_header():
   log.info("getting token")
@@ -14,11 +15,6 @@ def get_auth_header():
 def send_request(api_url):
   request = requests.get(api_url, headers=get_auth_header())
   return request.json()
-
-# user_id = "44196397"
-# api_url = f"https://api.twitter.com/2/users/{user_id}"
-# request = requests.get(api_url, headers=get_auth_header())
-# print(request)
 
 def my_task_func(ti: TaskInstance, **kwargs):
   my_list = [1,2,3,4,5]
@@ -51,6 +47,17 @@ def get_twitter_api_data(ti: TaskInstance, **kwargs):
   return
   #Should log the list [1,2,3,4,5] to this task's log.
 
+def sort_data_into_df(data):
+  df = pd.DataFrame(data)
+  log.info(df.head())
+  return df
+
+def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
+  users = ti.xcom_pull(task_ids="get_twitter_api_data", key="users")
+  users_df = sort_data_into_df(users)
+  tweets = ti.xcom_pull(task_ids="get_twitter_api_data", key="tweets")
+  tweets_df = sort_data_into_df(tweets)
+
 with DAG(
     dag_id="project_lab_1_etl",
     schedule_interval="0 9 * * *",
@@ -72,5 +79,10 @@ with DAG(
         python_callable=get_twitter_api_data,
         provide_context=True
     )
+    transform_twitter_api_data_task = PythonOperator(
+      task_id="transform_twitter_api_data",
+      python_callable=transform_twitter_api_data_func,
+      provide_context=True
+    )
 
-my_dummy_task >> my_dummy_task_two >> get_twitter_api_data_task
+my_dummy_task >> my_dummy_task_two >> get_twitter_api_data_task >> transform_twitter_api_data_task
