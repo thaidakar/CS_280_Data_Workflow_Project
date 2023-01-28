@@ -18,10 +18,12 @@ def get_auth_header():
 def my_task_func(ti: TaskInstance, **kwargs):
   my_list = [1,2,3,4,5]
   ti.xcom_push("i_love_ds", my_list)
+  return
 
 def my_task_func_2(ti: TaskInstance, **kwargs):
-  my_list = ti.xcom_pull(task_id="my_dummy_task", key="i_love_ds")
+  my_list = ti.xcom_pull(task_id="my_dummy_task_1", key="i_love_ds")
   log.info(my_list)
+  return
   #Should log the list [1,2,3,4,5] to this task's log.
 
 # Calls the twitter api using the python requests module
@@ -40,7 +42,7 @@ with DAG(
     catchup=False,
 ) as dag:
     my_dummy_task = PythonOperator(
-        task_id="my_dummy_task",
+        task_id="my_dummy_task_1",
         python_callable=my_task_func,
         provide_context=True,
     )
