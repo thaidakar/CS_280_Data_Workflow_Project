@@ -6,6 +6,7 @@ import pendulum
 from airflow.operators.python import PythonOperator
 import requests
 import pandas as pd
+import json
 
 def get_auth_header():
   log.info("getting token")
@@ -54,9 +55,11 @@ def sort_data_into_df(data):
 
 def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
   users = ti.xcom_pull(task_ids="get_twitter_api_data", key="users")
-  users_df = sort_data_into_df({'data': {'followers_count': users.data.followers_count, 'following_count': users.data.following_count, 'tweet_count': users.data.tweet_count, 'listed_count': users.data.listed_count}})
+  user_data = users['data']
+  users_df = sort_data_into_df({'user_id': [i['id'] for i in user_data], 'username': [i['username'] for i in user_data], 'name': [i['name'] for i in user_data], 'followers_count': [i['public_metrics']['followers_count'] for i in user_data], 'following_count': [i['public_metrics']['following_count'] for i in user_data], 'tweet_count': [i['public_metrics']['tweet_count'] for i in user_data], 'listed_count': [i['public_metrics']['listed_count'] for i in user_data]})
   tweets = ti.xcom_pull(task_ids="get_twitter_api_data", key="tweets")
-  tweets_df = sort_data_into_df({'data': {'retweet_count': tweets.data.retweet_count, 'reply_count': tweets.data.reply_count, 'like_count': tweets.data.like_count, 'quote_count': tweets.data.quote_count, 'impression_count': tweets.data.impression_count}})
+  tweet_data = tweets['data']
+  tweets_df = sort_data_into_df({'tweet_id': [i['id'] for i in tweet_data], 'text': [i['text'] for i in tweet_data],'retweet_count': [i['public_metrics']['retweet_count'] for i in tweet_data], 'reply_count': [i['public_metrics']['reply_count'] for i in tweet_data], 'like_count': [i['public_metrics']['like_count'] for i in tweet_data], 'quote_count': [i['public_metrics']['quote_count'] for i in tweet_data], 'impression_count': [i['public_metrics']['impression_count'] for i in tweet_data]})
 
 with DAG(
     dag_id="project_lab_1_etl",
