@@ -6,7 +6,7 @@ import pendulum
 from airflow.operators.python import PythonOperator
 import requests
 import pandas as pd
-import json
+from google.cloud import storage
 
 def get_auth_header():
   log.info("getting token")
@@ -60,6 +60,10 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
   tweets = ti.xcom_pull(task_ids="get_twitter_api_data", key="tweets")
   tweet_data = tweets['data']
   tweets_df = sort_data_into_df({'tweet_id': [i['id'] for i in tweet_data], 'text': [i['text'] for i in tweet_data],'retweet_count': [i['public_metrics']['retweet_count'] for i in tweet_data], 'reply_count': [i['public_metrics']['reply_count'] for i in tweet_data], 'like_count': [i['public_metrics']['like_count'] for i in tweet_data], 'quote_count': [i['public_metrics']['quote_count'] for i in tweet_data], 'impression_count': [i['public_metrics']['impression_count'] for i in tweet_data]})
+  client = storage.Client()
+  bucket = client.get_bucket("s-b-apache-airflow-cs280")
+  bucket.blob("data/tweets.csv").upload_from_string(tweets_df.to_csv(index=False), "text/csv")
+  bucket.blob("data/users.csv").upload_from_string(users_df.to_csv(index=False), "text/csv")
 
 with DAG(
     dag_id="project_lab_1_etl",
