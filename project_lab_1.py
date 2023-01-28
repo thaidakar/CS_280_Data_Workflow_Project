@@ -54,9 +54,9 @@ def sort_data_into_df(data):
 
 def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
   users = ti.xcom_pull(task_ids="get_twitter_api_data", key="users")
-  users_df = sort_data_into_df({'followers_count': users.data.followers_count, 'following_count': users.data.following_count, 'tweet_count': users.data.tweet_count, 'listed_count': users.data.listed_count})
+  users_df = sort_data_into_df({'data': {'followers_count': users.data.followers_count, 'following_count': users.data.following_count, 'tweet_count': users.data.tweet_count, 'listed_count': users.data.listed_count}})
   tweets = ti.xcom_pull(task_ids="get_twitter_api_data", key="tweets")
-  tweets_df = sort_data_into_df({'retweet_count': tweets.data.retweet_count, 'reply_count': tweets.data.reply_count, 'like_count': tweets.data.like_count, 'quote_count': tweets.data.quote_count, 'impression_count': tweets.data.impression_count})
+  tweets_df = sort_data_into_df({'data': {'retweet_count': tweets.data.retweet_count, 'reply_count': tweets.data.reply_count, 'like_count': tweets.data.like_count, 'quote_count': tweets.data.quote_count, 'impression_count': tweets.data.impression_count}})
 
 with DAG(
     dag_id="project_lab_1_etl",
