@@ -21,7 +21,7 @@ def my_task_func(ti: TaskInstance, **kwargs):
   return
 
 def my_task_func_2(ti: TaskInstance, **kwargs):
-  my_list = ti.xcom_pull(task_id="my_dummy_task_1", key="i_love_ds")
+  my_list = ti.xcom_pull(task_ids="my_dummy_task_1", key="i_love_ds")
   log.info(my_list)
   return
   #Should log the list [1,2,3,4,5] to this task's log.
