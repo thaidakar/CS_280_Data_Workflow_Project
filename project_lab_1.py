@@ -9,7 +9,7 @@ import requests
 def get_auth_header():
   log.info("getting token")
   bearer_token = Variable.get("TWITTER_BEARER_TOKEN")
-  log.info("token received")
+  log.info(f"token received {bearer_token}")
   return {"Authorization": f"Bearer {bearer_token}"}
 
 def send_request(api_url):
