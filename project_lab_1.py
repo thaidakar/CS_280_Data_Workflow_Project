@@ -31,10 +31,10 @@ def my_task_func_2(ti: TaskInstance, **kwargs):
   #Should log the list [1,2,3,4,5] to this task's log.
 
 def load_tweets(ids):
-  return send_request(f"https://api.twitter.com/2/tweets?ids={','.join(ids)}&tweet.fields=public_metrics,author_id,text")
+  return send_request(f"https://api.twitter.com/2/tweets?ids={','.join([str(i) for i in ids])}&tweet.fields=public_metrics,author_id,text")
 
 def load_users(ids):
-  return send_request(f"https://api.twitter.com/2/users?ids={','.join(ids)}&user.fields=public_metrics,profile_image_url,username,description,id")
+  return send_request(f"https://api.twitter.com/2/users?ids={','.join([str(i) for i in ids])}&user.fields=public_metrics,profile_image_url,username,description,id")
 
 def get_twitter_api_data(ti: TaskInstance, **kwargs):
   tweet_ids = Variable.get("TWITTER_TWEET_IDS", deserialize_json=True)
