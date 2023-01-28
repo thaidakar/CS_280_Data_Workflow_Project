@@ -7,7 +7,9 @@ from airflow.operators.python import PythonOperator
 import requests
 
 def get_auth_header():
-  bearer_token = Variable.get("TWITTER_BEARER_TOKEN", deserialize_json=True)
+  log.info("getting token")
+  bearer_token = Variable.get("TWITTER_BEARER_TOKEN")
+  log.info("token received")
   return {"Authorization": f"Bearer {bearer_token}"}
 
 def send_request(api_url):
@@ -38,10 +40,12 @@ def load_users(ids):
 
 def get_twitter_api_data(ti: TaskInstance, **kwargs):
   tweet_ids = Variable.get("TWITTER_TWEET_IDS", deserialize_json=True)
+  log.info(f"tweet ids: {tweet_ids}")
   tweets = load_tweets(tweet_ids)
   log.info(tweets)
   ti.xcom_push("tweets", tweets)
   user_ids = Variable.get("TWITTER_USER_IDS", deserialize_json=True)
+  log.info(f"user ids: {user_ids}")
   users = load_users(user_ids)
   log.info(users)
   ti.xcom_push("users", users)
