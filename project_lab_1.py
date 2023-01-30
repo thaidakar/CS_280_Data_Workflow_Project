@@ -74,7 +74,10 @@ def push_data_to_databox(name, metric: int):
 def upload_databox_data(ti: TaskInstance, **kwargs):
   users = pd.read_csv('gs://s-b-apache-airflow-cs280/data/users.csv')
 
+  log.info(users)
+
   for user in users:
+    log.info(user)
     name = user['name']
     push_data_to_databox(f'{name}_followers_count', user['followers_count'])
     push_data_to_databox(f'{name}_following_count', user['following_count'])
