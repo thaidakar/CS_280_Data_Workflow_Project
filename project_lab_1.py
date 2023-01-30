@@ -1,6 +1,3 @@
-import sys; 
-import os;
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from airflow import DAG
 from airflow.models import Variable
 from airflow.models import TaskInstance
@@ -9,8 +6,8 @@ import pendulum
 from airflow.operators.python import PythonOperator
 import requests
 import pandas as pd
-from google.cloud import storage
 from databox import Client
+from google.cloud import storage
 
 def get_auth_header():
   log.info("getting token")
