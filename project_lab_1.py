@@ -85,10 +85,10 @@ def upload_databox_data(ti: TaskInstance, **kwargs):
 
   for index, tweet in tweets.iterrows():
     id = tweet['tweet_id']
-    push_data_to_databox(f'{id}', tweet['reply_count'])
-    push_data_to_databox(f'{id}', tweet['like_count'])
-    push_data_to_databox(f'{id}', tweet['impression_count'])
-    push_data_to_databox(f'{id}', tweet['retweet_count'])
+    push_data_to_databox(f'{id}_reply_count', tweet['reply_count'])
+    push_data_to_databox(f'{id}_like_count', tweet['like_count'])
+    push_data_to_databox(f'{id}_impression_count', tweet['impression_count'])
+    push_data_to_databox(f'{id}_retweet_count', tweet['retweet_count'])
 
 with DAG(
     dag_id="project_lab_1_etl",
