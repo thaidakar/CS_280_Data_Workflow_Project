@@ -13,7 +13,7 @@ from models.Users import User
 from models.Tweets import Tweet
 from models.UserTimeseries import UserTimeseries
 from models.TweetTimeseries import TweetTimeseries
-import Datetime
+from datetime import datetime
 
 def load_data_from_db(ti: TaskInstance, **kwargs):
     session = Session()
@@ -107,7 +107,7 @@ def store_data(ti: TaskInstance, **kwargs):
         user_id = user['user_id'],
         username = user['username'],
         name = user['name'],
-        created_at = Datetime.now()
+        created_at = datetime.now()
       )
       user_data.append(user_obj)
     user_timeseries_obj = UserTimeseries(
@@ -116,7 +116,7 @@ def store_data(ti: TaskInstance, **kwargs):
       following_count = user['following_count'],
       tweet_count = user['tweet_count'],
       listed_count = user['listed_count'],
-      date = Datetime.now()
+      date = datetime.now()
     )
     user_data.append(user_timeseries_obj)
   
@@ -134,7 +134,7 @@ def store_data(ti: TaskInstance, **kwargs):
         tweet_id = tweet['tweet_id'],
         user_id = tweet['user_id'],
         text = tweet['text'],
-        created_at = Datetime.now()
+        created_at = datetime.now()
       )
       tweet_data.append(tweet_obj)
     tweet_timeseries_obj = TweetTimeseries(
