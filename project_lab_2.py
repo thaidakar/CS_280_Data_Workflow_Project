@@ -34,8 +34,12 @@ def send_request(api_url):
   request = requests.get(api_url, headers=get_auth_header())
   return request.json()
 
-def load_tweets(ids):
-  return send_request(f"https://api.twitter.com/2/tweets?ids={','.join([str(i) for i in ids])}&tweet.fields=public_metrics,author_id,text,created_at")
+def load_tweets(totalIds):
+  chunks = [totalIds[i:i+100] for i in range(0,len(totalIds),100)]
+  tweets = []
+  for ids in chunks:
+     tweets.append(send_request(f"https://api.twitter.com/2/tweets?ids={','.join([str(i) for i in ids])}&tweet.fields=public_metrics,author_id,text,created_at"))
+  return tweets
 
 def get_recent_tweets(userId, tweetIds):
     recent_tweets = send_request(f"https://api.twitter.com/2/users/{userId}/tweets?max_results=5")
