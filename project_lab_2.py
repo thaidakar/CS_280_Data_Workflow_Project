@@ -38,7 +38,7 @@ def load_tweets(totalIds):
   chunks = [totalIds[i:i+100] for i in range(0,len(totalIds),100)]
   tweets = []
   for ids in chunks:
-     tweets.append(send_request(f"https://api.twitter.com/2/tweets?ids={','.join([str(i) for i in ids])}&tweet.fields=public_metrics,author_id,text,created_at")['data'])
+     tweets.extend(send_request(f"https://api.twitter.com/2/tweets?ids={','.join([str(i) for i in ids])}&tweet.fields=public_metrics,author_id,text,created_at")['data'])
   return tweets
 
 def get_recent_tweets(userId, tweetIds):
