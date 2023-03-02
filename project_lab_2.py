@@ -38,7 +38,7 @@ def load_tweets(totalIds):
   chunks = [totalIds[i:i+100] for i in range(0,len(totalIds),100)]
   tweets = []
   for ids in chunks:
-     tweets.append(send_request(f"https://api.twitter.com/2/tweets?ids={','.join([str(i) for i in ids])}&tweet.fields=public_metrics,author_id,text,created_at"))
+     tweets.append(send_request(f"https://api.twitter.com/2/tweets?ids={','.join([str(i) for i in ids])}&tweet.fields=public_metrics,author_id,text,created_at")['data'])
   return tweets
 
 def get_recent_tweets(userId, tweetIds):
@@ -84,7 +84,7 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
   user_data = users['data']
   users_df = sort_data_into_df({'user_id': [i['id'] for i in user_data], 'username': [i['username'] for i in user_data], 'name': [i['name'] for i in user_data], 'followers_count': [i['public_metrics']['followers_count'] for i in user_data], 'following_count': [i['public_metrics']['following_count'] for i in user_data], 'tweet_count': [i['public_metrics']['tweet_count'] for i in user_data], 'listed_count': [i['public_metrics']['listed_count'] for i in user_data]})
   tweets = ti.xcom_pull(task_ids="call_api_task", key="tweets")
-  tweet_data = tweets['data']
+  tweet_data = tweets
   tweets_df = sort_data_into_df({'tweet_id': [i['id'] for i in tweet_data], 'user_id': [i['author_id'] for i in tweet_data], 'date': [i['created_at'] for i in tweet_data], 'text': [i['text'] for i in tweet_data],'retweet_count': [i['public_metrics']['retweet_count'] for i in tweet_data], 'like_count': [i['public_metrics']['like_count'] for i in tweet_data]})
   client = storage.Client()
   bucket = client.get_bucket("s-b-apache-airflow-cs280")
