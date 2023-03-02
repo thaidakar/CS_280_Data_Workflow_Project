@@ -91,11 +91,6 @@ def transform_twitter_api_data_func(ti: TaskInstance, **kwargs):
   bucket.blob("data/tweets.csv").upload_from_string(tweets_df.to_csv(index=False), "text/csv")
   bucket.blob("data/users.csv").upload_from_string(users_df.to_csv(index=False), "text/csv")
 
-def push_data_to_databox(name, metric: int):
-  client_token = Variable.get("DATABOX_TOKEN")
-  client = Client(f"{client_token}")
-  client.push(name, metric)
-
 def store_data(ti: TaskInstance, **kwargs):
   session = Session()
 
@@ -145,7 +140,7 @@ def store_data(ti: TaskInstance, **kwargs):
       tweet_id = tweet['tweet_id'],
       retweet_count = tweet['retweet_count'],
       favorite_count = tweet['like_count'],
-      date = tweet['date']
+      date = datetime.now()
     )
     tweet_data.append(tweet_timeseries_obj)
 
